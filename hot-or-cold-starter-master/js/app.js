@@ -18,6 +18,7 @@ $(function(){
   	var randomNumber = 0;
   	var amountOfGuesses = 0;
   	var guessCorrect = false;
+  	var passValidation;
 
 
   	/*-- Initialise New Game --*/
@@ -89,12 +90,14 @@ $(function(){
 
   			if(!guessCorrect) {
 	  			$userGuess = Number($('#userGuess').val());
-	  			validateUserInput($userGuess);
-	  			console.log("User Guess: " + $userGuess);
-	  			//After user guesses, remove input val and put focus on input
-	  			clearPrevInput();
-	  			setFocus();
-	  			compare();	
+	  			passValidation = validateUserInput($userGuess);
+	  			if(passValidation) {
+		  			console.log("User Guess: " + $userGuess);
+		  			//After user guesses, remove input val and put focus on input
+		  			clearPrevInput();
+		  			setFocus();
+		  			compare();	
+		  		} //End nested if statement
 		  } else {
 		  	setFeedback("You've already guessed correctly. Click '+New Game' to play again");
 		  } //End if statement
@@ -105,17 +108,27 @@ $(function(){
   	function validateUserInput (input) {
   		/*If the user doesn't input a number or  
   		  inputs anything higher than 100 or below or equal to 0 */
-  		if( isNaN(input) || input > 100 || input < 1 || $.trim(input) !== '' ) {
-  			setFeedback('Please enter a number between 1 and 100');
-  			//Only after validation do we add to the guess count
+  		if(isNaN(input)) {
+  			setFeedback('Woops! I only accept numbers');
+  			clearPrevInput();
+  			setFocus();
   			return false;
-
+  		} else if (input > 100 || input < 1) {
+  			setFeedback('Uh oh.. I can only look at numbers between 1 and 100');
+  			clearPrevInput();
+  			setFocus();
+  			return false;
+  		} else if($.trim(input) == ' ') {
+  			setFeedback("Looks like you didn't add your guess");
+  			clearPrevInput();
+  			setFocus();
+  			return false;
   		} else {
   			//Only after validation do we add to guess count
   			addToGuessCount()
-  			}; //end if statement
+  			return true;
+  		}; //end if statement
   	} //End validateForNaN
-
 
 
   	/*-- Guess count function --*/
@@ -126,7 +139,6 @@ $(function(){
 	  		//List numbers guessed so far
 	  		$('#guessList').append('<li>' + $userGuess + '</li>');
   	}
-
 
 
 	/*-- Function to check whether userGuess is equal to randomNumber --*/
