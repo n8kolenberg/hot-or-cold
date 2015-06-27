@@ -90,6 +90,7 @@ $(function(){
   			if(!guessCorrect) {
 	  			$userGuess = Number($('#userGuess').val());
 	  			validateUserInput($userGuess);
+	  			addToGuessCount();
 	  			console.log("User Guess: " + $userGuess);
 	  			//After user guesses, remove input val and put focus on input
 	  			clearPrevInput();
@@ -98,7 +99,6 @@ $(function(){
 		  } else {
 		  	setFeedback("You've already guessed correctly. Click '+New Game' to play again");
 		  } //End if statement
-
 	}); //End Submit on form
 
 
@@ -106,45 +106,51 @@ $(function(){
   	function validateUserInput (input) {
   		/*If the user doesn't input a number or  
   		  inputs anything higher than 100 or below or equal to 0 */
-  		if( isNaN(input) || input > 100 || input <= 0) {
+  		if( isNaN(input) || input > 100 || input < 1 || $.trim(input) !== '' ) {
   			setFeedback('Please enter a number between 1 and 100');
-  		} else {
-	  		//If user successfully inputs number, we add to the amount of guesses and show it
-	  		amountOfGuesses++;
-	  		$('span#count').html(amountOfGuesses);
-	  		//List numbers guessed so far
-	  		$('#guessList').append('<li>' + input + '</li>');
-  		}
+  		} //end if statement
   	} //End validateForNaN
 
 
-	//To check whether userGuess is equal to randomNumber
+
+  	/*-- Guess count function --*/
+  	function addToGuessCount () {
+  			//We add to the amount of guesses and show it
+	  		amountOfGuesses++;
+	  		$('span#count').html(amountOfGuesses);
+	  		//List numbers guessed so far
+	  		$('#guessList').append('<li>' + $userGuess + '</li>');
+  	}
+
+
+
+	/*-- Function to check whether userGuess is equal to randomNumber --*/
 	function compare () {
 		var guessDifference = randomNumber - $userGuess;
 		guessDifference = Math.abs(guessDifference);
 		console.log('difference: ' + guessDifference);
 				
-		if (guessDifference >= 70) {
-			setFeedback('Your guess is getting frozen over');
-		
-		} else if (guessDifference >=60 && guessDifference <70) {
-			setFeedback('Your guess is getting colder');
-		
-		} else if (guessDifference >= 50 && guessDifference <60) {
-			setFeedback('Your guess is getting chilly');
-
-		} else if (guessDifference >= 30 && guessDifference <50) {
-			setFeedback('Your guess is getting hot');
-
-		} else if (guessDifference >= 10 && guessDifference <30) {
-			setFeedback('Your guess is getting hotter');
-
-		} else if (guessDifference >= 1 && guessDifference <10) {
-			setFeedback('Your guess is getting too hot to handle');
-		
-		} else {
+		if (guessDifference == 0) {
 			setFeedback('Yeah baby!! You got it!');
 			guessCorrect = true;
+
+		} else if (guessDifference <= 5) {
+			setFeedback('Your guess is getting really hot!');
+		
+		} else if (guessDifference <=10) {
+			setFeedback('Your guess is getting hot!');
+		
+		} else if (guessDifference > 10 && guessDifference <= 20) {
+			setFeedback('Your guess is getting warm!');
+
+		} else if (guessDifference > 20 && guessDifference <= 30) {
+			setFeedback('Your guess is getting cold!');
+
+		} else if (guessDifference > 30 && guessDifference <= 40) {
+			setFeedback('Your guess is very cold!');
+		
+		} else {
+			setFeedback('Your guess is freezing over!')
 		
 		}//End if statement
 
