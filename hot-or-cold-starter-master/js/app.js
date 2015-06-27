@@ -90,12 +90,11 @@ $(function(){
   			if(!guessCorrect) {
 	  			$userGuess = Number($('#userGuess').val());
 	  			validateUserInput($userGuess);
-	  			addToGuessCount();
 	  			console.log("User Guess: " + $userGuess);
 	  			//After user guesses, remove input val and put focus on input
 	  			clearPrevInput();
 	  			setFocus();
-	  			return compare();	
+	  			compare();	
 		  } else {
 		  	setFeedback("You've already guessed correctly. Click '+New Game' to play again");
 		  } //End if statement
@@ -108,7 +107,13 @@ $(function(){
   		  inputs anything higher than 100 or below or equal to 0 */
   		if( isNaN(input) || input > 100 || input < 1 || $.trim(input) !== '' ) {
   			setFeedback('Please enter a number between 1 and 100');
-  		} //end if statement
+  			//Only after validation do we add to the guess count
+  			return false;
+
+  		} else {
+  			//Only after validation do we add to guess count
+  			addToGuessCount()
+  			}; //end if statement
   	} //End validateForNaN
 
 
@@ -126,34 +131,33 @@ $(function(){
 
 	/*-- Function to check whether userGuess is equal to randomNumber --*/
 	function compare () {
-		var guessDifference = randomNumber - $userGuess;
-		guessDifference = Math.abs(guessDifference);
-		console.log('difference: ' + guessDifference);
-				
-		if (guessDifference == 0) {
-			setFeedback('Yeah baby!! You got it!');
-			guessCorrect = true;
+			var guessDifference = randomNumber - $userGuess;
+			guessDifference = Math.abs(guessDifference);
+			console.log('difference: ' + guessDifference);
+					
+			if (guessDifference == 0) {
+				setFeedback('Yeah baby!! You got it!');
+				guessCorrect = true;
 
-		} else if (guessDifference <= 5) {
-			setFeedback('Your guess is getting really hot!');
-		
-		} else if (guessDifference <=10) {
-			setFeedback('Your guess is getting hot!');
-		
-		} else if (guessDifference > 10 && guessDifference <= 20) {
-			setFeedback('Your guess is getting warm!');
+			} else if (guessDifference <= 5) {
+				setFeedback('Your guess is getting really hot!');
+			
+			} else if (guessDifference <=10) {
+				setFeedback('Your guess is getting hot!');
+			
+			} else if (guessDifference > 10 && guessDifference <= 20) {
+				setFeedback('Your guess is getting warm!');
 
-		} else if (guessDifference > 20 && guessDifference <= 30) {
-			setFeedback('Your guess is getting cold!');
+			} else if (guessDifference > 20 && guessDifference <= 30) {
+				setFeedback('Your guess is getting cold!');
 
-		} else if (guessDifference > 30 && guessDifference <= 40) {
-			setFeedback('Your guess is very cold!');
-		
-		} else {
-			setFeedback('Your guess is freezing over!')
-		
-		}//End if statement
-
+			} else if (guessDifference > 30 && guessDifference <= 40) {
+				setFeedback('Your guess is very cold!');
+			
+			} else  if (guessDifference > 40) {
+				setFeedback('Your guess is freezing over!');
+			
+			} return false ;//End nested if statement
 	}//End compare function
 
 
