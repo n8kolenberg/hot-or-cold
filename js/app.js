@@ -19,7 +19,8 @@ $(function(){
   	var amountOfGuesses = 0;
   	var guessCorrect = false;
   	var passValidation;
-
+    var coolWords = ['Awww Yeah!', 'Boomshakalalah!', '(^.^)', '٩(◔‿◔)۶', '(≧◡≦)', 'ヽ(´▽｀)ノ', 'Wicked!', 'Dude!!', 'Niiiiice!', 'Fo shizzle!', 'Booyah!'];
+    var bummerWords = ['Darn..', 'Oh no..', 'Aw snap :(', 'Bummer..', '(┛◉Д◉)┛彡┻━┻', '(⊙︿⊙)', 'Oh man..', 'Oh man..', 'Brrrr..', '(>.<)' ];
 
   	/*-- Initialise New Game --*/
   	newGame();
@@ -140,36 +141,55 @@ $(function(){
 	  		$('#guessList').append('<li>' + $userGuess + '</li>');
   	}
 
-
 	/*-- Function to check whether userGuess is equal to randomNumber --*/
 	function compare () {
-			var guessDifference = randomNumber - $userGuess;
-			guessDifference = Math.abs(guessDifference);
-			console.log('difference: ' + guessDifference);
-					
-			if (guessDifference == 0) {
-				setFeedback('Yeah baby!! You got it!');
-				guessCorrect = true;
+      var $prevUserGuess = parseInt($('#guessList').find("li:last").prev().text());
+			var currentGuessDifference = randomNumber - $userGuess;
+      var previousGuessDifference = randomNumber - $prevUserGuess;
+			currentGuessDifference = Math.abs(currentGuessDifference);
+      previousGuessDifference = Math.abs(previousGuessDifference);
+			console.log('currentdifference: ' + currentGuessDifference);
+      console.log('previousdifference: ' + previousGuessDifference);
 
-			} else if (guessDifference <= 5) {
-				setFeedback('Your guess is getting really hot!');
-			
-			} else if (guessDifference <=10) {
-				setFeedback('Your guess is getting hot!');
-			
-			} else if (guessDifference > 10 && guessDifference <= 20) {
-				setFeedback('Your guess is getting warm!');
+      //if currentGuessDifference < previousGuessDifference, we're getting closer to the answer
+      //if currentGuessDifference > previousGuessDifference, we're getting farther away from the answer
 
-			} else if (guessDifference > 20 && guessDifference <= 30) {
-				setFeedback('Your guess is getting cold!');
+			if (isNaN(previousGuessDifference)) {		
+  			if (currentGuessDifference == 0) {
+  				setFeedback('Yeah baby!! You got it!');
+  				guessCorrect = true;
 
-			} else if (guessDifference > 30 && guessDifference <= 40) {
-				setFeedback('Your guess is very cold!');
-			
-			} else  if (guessDifference > 40) {
-				setFeedback('Your guess is freezing over!');
-			
-			} return false ;//End nested if statement
+  			} else if (currentGuessDifference <= 5) {
+  				setFeedback('Your guess is really hot!');
+  			
+  			} else if (currentGuessDifference <=10) {
+  				setFeedback('Your guess is hot!');
+  			
+  			} else if (currentGuessDifference > 10 && currentGuessDifference <= 20) {
+  				setFeedback('Your guess is warm!');
+
+  			} else if (currentGuessDifference > 20 && currentGuessDifference <= 30) {
+  				setFeedback('Your guess is cold!');
+
+  			} else if (currentGuessDifference > 30 && currentGuessDifference <= 40) {
+  				setFeedback('Your guess is very cold!');
+  			
+  			} else  if (currentGuessDifference > 40) {
+  				setFeedback('Your guess is freezing over!');
+  			
+  			} return false;//End nested if statement
+      
+      } else if (currentGuessDifference == 0) {
+          setFeedback('Yeah baby!! You got it!');
+          guessCorrect = true;
+
+      } else if (currentGuessDifference < previousGuessDifference) {
+        setFeedback( coolWords[Math.floor(Math.random()*coolWords.length)] + " Your guess is getting warmer!");
+
+      } else if (currentGuessDifference > previousGuessDifference) {
+        setFeedback( bummerWords[Math.floor(Math.random()*bummerWords.length)] + " Your guess is getting colder");
+
+      } return false; //End if statement
 	}//End compare function
 
 
